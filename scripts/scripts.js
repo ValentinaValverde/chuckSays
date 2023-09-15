@@ -6,26 +6,41 @@ const categoryListForm = document.getElementById('categoryListForm');
 document.addEventListener('DOMContentLoaded', function () {
     console.log("DOM Content Loaded");
 
-    const chuckQuote = document.getElementById('chuckQuote');
     const apiUrl = 'https://api.chucknorris.io/jokes/random';
-    get(apiUrl).then(function(response){
-        console.log("RESPONSE:", response);
-        showQuote(response.value, chuckQuote);
-    })
+    generateQuote(apiUrl);
 
     const categoriesUrl = 'https://api.chucknorris.io/jokes/categories';
     get(categoriesUrl).then(function(response){
         console.log("CATEGORIES:", response);
         generateCategoryList(response);
     })
+
+    categoryListForm.addEventListener('submit', function(event){
+        event.preventDefault();
+        const newCategory = this.querySelector('select').value;
+        console.log(newCategory);
+        const apiUrl = `https://api.chucknorris.io/jokes/random?category=${newCategory}`;
+        //string template literals: using `backticks` with the $ and {}, it will automatically interpolate
+        console.log(apiUrl); //demo to see the new url after selecting a new category
+        generateQuote(apiUrl);
+
+    });
 });
+
+
+function generateQuote(apiUrl){
+    get(apiUrl).then(function(response){
+        const chuckQuote = document.getElementById('chuckQuote');
+        console.log("RESPONSE:", response);
+        showQuote(response.value, chuckQuote);
+    });
+}
+
 
 function showQuote(quote, element) {
     console.log("QUOTE:", quote);
     element.innerText = quote;
 };
-
-
 
 function generateCategoryList(categoryArray){
     console.log(categoryArray);
@@ -43,6 +58,6 @@ function generateCategoryList(categoryArray){
     categoryListForm.append(selectElement);
 };
 
-categoryListForm.addEventListener('submit', function(){
-    
-})
+
+
+///update categroy responses: mission: write an array filter method to only return the categories you want (ex: removing the explicit category, or the fashio one, etc.)
